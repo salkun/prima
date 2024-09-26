@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Periksa Bilangan Prima</title>
+    <style>
+        /* Gaya dasar untuk body */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('bc.jpg'); /* Ganti dengan path gambar yang benar */
+            background-size: cover; /* Mengubah ukuran gambar agar sesuai dengan layar */
+            background-position: center; /* Memusatkan gambar */
+            background-repeat: no-repeat; /* Mencegah gambar diulang */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Kontainer utama untuk form */
+        .container {
+            background-color: rgba(255, 255, 255, 0.4); /* Latar belakang putih dengan transparansi 80% */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #000000;
+        }
+
+        /* Gaya untuk label dan input */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        input[type="number"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Gaya untuk pesan hasil */
+        p {
+            font-size: 16px;
+            color: #000000;
+        }
+
+        /* Kontainer hasil dengan scroll ke bawah */
+        .result {
+            background-color: #f0f8ff;
+            padding: 10px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            margin-top: 10px;
+            max-height: 150px; /* Batas tinggi */
+            overflow-y: auto;  /* Aktifkan scroll vertikal */
+            white-space: normal; /* Bilangan tampil secara vertikal */
+            text-align: left; /* Bilangan ditampilkan rata kiri */
+            line-height: 1.5; /* Spasi antar bilangan */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Periksa Bilangan Prima Menggunakan Algoritma Serial</h2>
+        <!-- Form input untuk menerima rentang bilangan dari pengguna -->
+        <form id="primeForm">
+            <label for="start">Masukkan Bilangan Pertama:</label>
+            <input type="number" id="start" name="start" required>
+            <br>
+            <label for="end">Masukkan Bilangan Terakhir:</label>
+            <input type="number" id="end" name="end" required>
+            <br>
+            <input type="submit" value="Periksa">
+        </form>
+
+        <div class="result" id="resultContainer"></div>
+
+        <div id="executionTime"></div>
+    </div>
+
+    <script>
+        // Fungsi untuk memeriksa apakah sebuah bilangan prima
+        function isPrime(num) {
+            if (num < 2) return false;
+            for (let i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) return false;
+            }
+            return true;
+        }
+
+        // Fungsi untuk mencari bilangan prima dalam rentang secara serial
+        function findPrimesInRange(start, end) {
+            const primeNumbers = [];
+            for (let num = start; num <= end; num++) {
+                if (isPrime(num)) {
+                    primeNumbers.push(num);
+                }
+            }
+            return primeNumbers;
+        }
+
+        // Event listener untuk form submit
+        document.getElementById('primeForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            const start = parseInt(document.getElementById('start').value);
+            const end = parseInt(document.getElementById('end').value);
+            const resultContainer = document.getElementById('resultContainer');
+            const executionTimeDiv = document.getElementById('executionTime');
+
+            // Mencatat waktu awal
+            const startTime = performance.now();
+            const startTimeFormatted = new Date().toLocaleTimeString(); // Format waktu
+
+            // Mencari bilangan prima secara serial
+            const primeNumbers = findPrimesInRange(start, end);
+
+            // Menampilkan hasil
+            resultContainer.innerHTML = `<p>Bilangan prima antara ${start} dan ${end} adalah:</p>`;
+            if (primeNumbers.length > 0) {
+                resultContainer.innerHTML += primeNumbers.join('<br>');
+            } else {
+                resultContainer.innerHTML += "<p>Tidak ada bilangan prima dalam rentang tersebut.</p>";
+            }
+
+            // Mencatat waktu akhir
+            const endTime = performance.now();
+            const endTimeFormatted = new Date().toLocaleTimeString(); // Format waktu
+            const executionTime = (endTime - startTime).toFixed(2); // Waktu dalam milidetik
+
+            // Menampilkan waktu awal, akhir, dan total waktu
+            executionTimeDiv.innerHTML = `
+                <p>Waktu awal proses: ${startTimeFormatted}</p>
+                <p>Waktu akhir proses: ${endTimeFormatted}</p>
+                <p>Total waktu proses: ${executionTime} milidetik.</p>
+            `;
+        });
+    </script>
+</body>
+</html>
